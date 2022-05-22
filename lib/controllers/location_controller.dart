@@ -19,8 +19,9 @@ class LocationController extends GetxController implements GetxService {
 
   bool get loading => _loading;
 
-  Position get position => _position;
   late Position _position;
+
+  Position get position => _position;
 
   late Position _pickPosition;
 
@@ -52,6 +53,8 @@ class LocationController extends GetxController implements GetxService {
 
   late GoogleMapController _mapController;
 
+  GoogleMapController get mapController => _mapController;
+
   void setMapController(GoogleMapController mapController) {
     _mapController = mapController;
   }
@@ -59,51 +62,93 @@ class LocationController extends GetxController implements GetxService {
   bool _updateAddressData = true;
   bool _changeAddress = true;
 
+  /*
+  for service zone
+  */
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  /*
+  whether the user is in service zone or not
+  */
+  bool _inZone = false;
+
+  bool get inZone => _inZone;
+
+  /*
+  showing and hiding the button as the map loads
+  */
+  bool _buttonDisabled = true;
+
+  bool get buttonDisabled => _buttonDisabled;
+
   void updatePosition(CameraPosition position, bool fromAddress) async {
     if (_updateAddressData) {
       _loading = true;
       update();
-    }
-    try {
-      if (fromAddress) {
-        _position = Position(
-          latitude: position.target.latitude,
-          longitude: position.target.longitude,
-          timestamp: DateTime.now(),
-          heading: 1,
-          accuracy: 1,
-          altitude: 1,
-          speedAccuracy: 1,
-          speed: 1,
-        );
-      } else {
-        _pickPosition = Position(
-          latitude: position.target.latitude,
-          longitude: position.target.longitude,
-          timestamp: DateTime.now(),
-          heading: 1,
-          accuracy: 1,
-          altitude: 1,
-          speedAccuracy: 1,
-          speed: 1,
-        );
+
+      try {
+        if (fromAddress) {
+          _position = Position(
+            latitude: position.target.latitude,
+            longitude: position.target.longitude,
+            timestamp: DateTime.now(),
+            heading: 1,
+            accuracy: 1,
+            altitude: 1,
+            speedAccuracy: 1,
+            speed: 1,
+          );
+        } else {
+          _pickPosition = Position(
+            latitude: position.target.latitude,
+            longitude: position.target.longitude,
+            timestamp: DateTime.now(),
+            heading: 1,
+            accuracy: 1,
+            altitude: 1,
+            speedAccuracy: 1,
+            speed: 1,
+          );
+        }
+        ResponseModel _responseModel = await getZone(
+            position.target.latitude.toString(),
+            position.target.longitude.toString(),
+            false);
+
+            _buttonDisabled = !_responseModel.isSuccess;
+
+        if (_changeAddress) {
+          String _address = await getAddressFromGeocode(
+            LatLng(position.target.latitude, position.target.longitude),
+          );
+          if (fromAddress) {
+            _placamark = Placemark(name: _address);
+          } else {
+            _pickPlacamark = Placemark(name: _address);
+          }
+        }
+      } catch (e) {
+        showCustomSnackBar(e.toString());
       }
-      if (_changeAddress) {
-        String _address = await getAddressFromGeocode(
-            LatLng(position.target.latitude, position.target.longitude));
-        fromAddress
-            ? _placamark = Placemark(name: _address)
-            : _pickPlacamark = Placemark(name: _address);
-      }
+      _loading = false;
       update();
-    } catch (e) {
-      showCustomSnackBar(e.toString());
+    } else {
+      _updateAddressData = true;
     }
+  }
+
+  void setAddAddressData() {
+    _position = _pickPosition;
+    _placamark = _pickPlacamark;
+    _updateAddressData = false;
+    update();
   }
 
   Future<String> getAddressFromGeocode(LatLng latLng) async {
     String _address = "UnKnown Location Found";
-    _address = await locationRepo.getAddressFromLatLong(_position);
+    _address = await locationRepo.getAddressFromLatLang(latLng);
     // Response response = await locationRepo.getAddressFromGeocode(latLng);
     // if (response.body['status'] == 'OK') {
     //   print('RESPONSE ---------------------------------'+response.body);
@@ -139,38 +184,23 @@ class LocationController extends GetxController implements GetxService {
   Future<Position> getGeoLocationPosition() async {
     bool serviceEnabled;
     LocationPermission permission;
-
-    // Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
       await Geolocator.openLocationSettings();
       return Future.error('Location services are disabled.');
     }
-
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
     return await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
@@ -203,10 +233,12 @@ class LocationController extends GetxController implements GetxService {
       await getAllAddressFromFirebase();
       String message = 'successfully';
       responseModel = ResponseModel(true, message);
+      saveUserAddress(addressModel);
     } else {
       print("couldn't save the address");
       responseModel = ResponseModel(false, "field :couldn't save the address");
     }
+    _loading = false;
     update();
     return responseModel;
   }
@@ -242,14 +274,54 @@ class LocationController extends GetxController implements GetxService {
     update();
   }
 
-  saveUserAddress(AddressModel addressModel)async{
+  Future<bool> saveUserAddress(AddressModel addressModel) async {
     String userAddress = jsonEncode(addressModel.toJson());
     return await locationRepo.saveUserAddress(userAddress);
   }
 
-  void clearAddressList(){
+  String getUserAddressFromLocalStorage() {
+    return locationRepo.getUserAddress();
+  }
+
+  void clearAddressList() {
     _addressList = [];
     _allAddressList = [];
     update();
+  }
+
+  Future<ResponseModel> getZone(String lat, String lng, bool markerLoad) async {
+    late ResponseModel _responseModel;
+    if (markerLoad) {
+      _loading = true;
+    } else {
+      _isLoading = true;
+    }
+    update();
+    Response response = await locationRepo.getZone(lat, lng);
+    if(response.statusCode == 200){
+
+      //if(response.body["zone_id"] != 2){
+       // _responseModel = ResponseModel(false, response.body['zone_id'].toString());
+       // _inZone = false;
+      //}else{
+        _responseModel = ResponseModel(true, response.body['zone_id'].toString());
+        _inZone = true;
+      //}
+     }else{
+      _inZone = false;
+      _responseModel = ResponseModel(true, response.statusText!);
+    }
+    print("///////////////////////////////////////////////////////////ZOE RESPONSE CODE IS "+response.statusCode.toString());// 200  //404  //500  //403
+    // await Future.delayed(const Duration(seconds: 2), () {
+    //   _responseModel = ResponseModel(true, "success");
+      if (markerLoad) {
+        _loading = false;
+      } else {
+        _isLoading = false;
+      }
+    //   _inZone = true;
+    // });
+    update();
+    return _responseModel;
   }
 }

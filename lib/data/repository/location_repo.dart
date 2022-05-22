@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_delivery_app/data/api/api_client.dart';
 import 'package:food_delivery_app/utils/app_constants.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,10 +27,10 @@ class LocationRepo {
 
   String address = 'search';
 
-  Future<String> getAddressFromLatLong(Position position) async {
+  Future<String> getAddressFromLatLang(LatLng position) async {
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    print(placemarks);
+    //print(placemarks);
     Placemark place = placemarks[0];
     address =
         '${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
@@ -63,10 +64,11 @@ class LocationRepo {
     try {
       await FirebaseFirestore.instance
           .collection('address')
-          .doc()
           .get()
-          .then((address) {
-        allAddress.add(AddressModel.fromJson(address.data()!));
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          allAddress.add(AddressModel.fromJson(doc.data() as Map<String,dynamic>));
+        });
       });
       return allAddress;
     } catch (e) {
@@ -80,4 +82,9 @@ class LocationRepo {
     return await sharedPreferences.setString(
         AppConstants.USER_ADDRESS, userAddress);
   }
+
+  Future<Response> getZone(String lat, String lng) async{
+    return await apiClient.getData("${AppConstants.ZONE_URI}?lat=$lat&lng=$lng");
+  }
+
 }

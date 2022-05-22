@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-class AppConstants{
+class AppConstants {
   static const String APP_NAME = 'ADFood';
   static const int APP_VERSION = 1;
   static const String BASE_URL = 'http://mvs.bslmeiyu.com';
@@ -19,10 +19,8 @@ class AppConstants{
 
   static const String USER_INFO_URI = '/api/v1/customer/info';
   static const String USER_ADDRESS = 'user_address';
-  static const String ADD_USER_ADDRESS = '/api/v1/customer/address/add';
-  static const String ADDRESS_LIST_URI = '/api/v1/customer/address/list';
+  static const String ADD_USER_ADDRESS = 'add_user_address';
+  static const String ADDRESS_LIST_URI = 'address_list_url';
   static const String GEOCODE_URI = '/api/v1/config/geocode-api';
-
-
-
+  static const String ZONE_URI = '/api/v1/config/get-zone-id';
 }

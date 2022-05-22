@@ -4,6 +4,7 @@ import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/controllers/recommended_product_controller.dart';
 import 'package:food_delivery_app/routes/route_helper.dart';
+import 'package:food_delivery_app/utils/colors.dart';
 import 'package:get/get.dart';
 import 'helper/dependencies.dart' as dep;
 
@@ -48,6 +49,10 @@ class _MyAppState extends State<MyApp> {
             return GetMaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Food App',
+               theme: ThemeData(
+                 primaryColor: AppColors.mainColor,
+                 fontFamily: "Roboto"
+               ),
                // home: SignInPage(),
               initialRoute: RouteHelper.getSplashPage(),
               getPages: RouteHelper.routes,

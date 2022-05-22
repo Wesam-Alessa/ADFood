@@ -4,10 +4,10 @@ import 'package:food_delivery_app/widgets/app_icon.dart';
 import 'package:food_delivery_app/widgets/big_text.dart';
 
 class AccountWidget extends StatelessWidget {
-  AppIcon appIcon;
-  BigTextWidget bigTextWidget;
+  final AppIcon appIcon;
+  final BigTextWidget bigTextWidget;
 
-  AccountWidget({Key? key, required this.appIcon, required this.bigTextWidget})
+  const AccountWidget({Key? key, required this.appIcon, required this.bigTextWidget})
       : super(key: key);
 
   @override
@@ -31,10 +31,13 @@ class AccountWidget extends StatelessWidget {
       child: Row(
         children: [
           appIcon,
-          const SizedBox(
-            width: 15,
+          SizedBox(
+            width: Dimensions.screenWidth-75,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal:Dimensions.width15),
+              child: bigTextWidget,
+            ),
           ),
-          bigTextWidget,
         ],
       ),
     );

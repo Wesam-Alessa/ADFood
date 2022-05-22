@@ -1,4 +1,5 @@
 import 'package:food_delivery_app/pages/address/add_address_page.dart';
+import 'package:food_delivery_app/pages/address/pick_address_map.dart';
 import 'package:food_delivery_app/pages/auth/sign_in_page.dart';
 import 'package:food_delivery_app/pages/auth/sign_up_page.dart';
 import 'package:food_delivery_app/pages/cart/cart_page.dart';
@@ -17,6 +18,7 @@ class RouteHelper {
   static const String signInPage = '/sign-in-page';
   static const String signUpPage = '/sign-up-page';
   static const String addAddressPage = '/address-page';
+  static const String pickAddressMap = '/pick-address';
 
   static String getInitial() => initial;
 
@@ -36,17 +38,19 @@ class RouteHelper {
 
   static String getAddressPage() => addAddressPage;
 
+  static String getPickMapAddressPage() => pickAddressMap;
+
   static List<GetPage> routes = [
     GetPage(
         name: initial,
         page: () => const HomePage(),
-        transitionDuration:const Duration(milliseconds: 300),
-        transition: Transition.rightToLeft ),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft),
     GetPage(
         name: splashPage,
         page: () => const SplashScreen(),
-        transitionDuration:const Duration(milliseconds: 300),
-        transition: Transition.rightToLeft ),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft),
     GetPage(
         name: popularFood,
         page: () {
@@ -54,8 +58,8 @@ class RouteHelper {
           var page = Get.parameters['page'];
           return PopularFoodDetail(pageId: int.parse(pageId!), page: page!);
         },
-        transition: Transition.rightToLeft ,
-        transitionDuration:const Duration(milliseconds: 300)),
+        transition: Transition.rightToLeft,
+        transitionDuration: const Duration(milliseconds: 300)),
     GetPage(
         name: recommendedFood,
         page: () {
@@ -63,29 +67,37 @@ class RouteHelper {
           var page = Get.parameters['page'];
           return RecommendedFoodDetail(pageId: int.parse(pageId!), page: page!);
         },
-        transition: Transition.rightToLeft ,
-        transitionDuration:const Duration(milliseconds: 300)),
+        transition: Transition.rightToLeft,
+        transitionDuration: const Duration(milliseconds: 300)),
     GetPage(
         name: cartPage,
         page: () {
           return const CartPage();
         },
-        transition: Transition.rightToLeft ,
-        transitionDuration:const Duration(milliseconds: 300)),
+        transition: Transition.rightToLeft,
+        transitionDuration: const Duration(milliseconds: 300)),
     GetPage(
         name: signInPage,
         page: () => const SignInPage(),
         transition: Transition.rightToLeft,
-        transitionDuration:const Duration(milliseconds: 300)),
+        transitionDuration: const Duration(milliseconds: 300)),
     GetPage(
         name: signUpPage,
         page: () => const SignUpPage(),
-        transition: Transition.rightToLeft ,
-        transitionDuration:const Duration(milliseconds: 300)),
+        transition: Transition.rightToLeft,
+        transitionDuration: const Duration(milliseconds: 300)),
     GetPage(
         name: addAddressPage,
         page: () => const AddAddressPage(),
-        transitionDuration:const Duration(milliseconds: 300),
-        transition: Transition.rightToLeft ),
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft),
+    GetPage(
+        name: pickAddressMap,
+        page: () {
+          PickAddressMap _pickMap = Get.arguments;
+          return _pickMap;
+        },
+        transitionDuration: const Duration(milliseconds: 300),
+        transition: Transition.rightToLeft),
   ];
 }

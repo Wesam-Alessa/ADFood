@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/utils/dimensions.dart';
 
 class BigTextWidget extends StatelessWidget {
-  Color color;
+  final Color color;
   final String text;
-  double size;
-  TextOverflow textOverflow;
+  final double size;
+  final TextOverflow textOverflow;
 
-  BigTextWidget({
+ const BigTextWidget({
     Key? key,
     required this.text,
     this.color = const Color(0xFF332d2b),

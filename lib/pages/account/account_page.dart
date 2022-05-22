@@ -20,8 +20,14 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      var _userLoggedIn = Get.find<AuthController>().userLoggedIn();
-    var address =Get.find<LocationController>().getUserAddress().address;
+    var _userLoggedIn = Get.find<AuthController>().userLoggedIn();
+    String address = '';
+    if(_userLoggedIn){
+      address = Get.find<LocationController>().getUserAddressFromLocalStorage();
+      if(address.isNotEmpty){
+        address = Get.find<LocationController>().getUserAddress().address;
+      }
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -109,7 +115,7 @@ class AccountPage extends StatelessWidget {
                                     height: Dimensions.height15,
                                   ),
                                   GestureDetector(
-                                    onTap: (){
+                                    onTap: () {
                                       Get.toNamed(RouteHelper.getAddressPage());
                                     },
                                     child: AccountWidget(
@@ -121,9 +127,9 @@ class AccountPage extends StatelessWidget {
                                         size: Dimensions.height10 * 5,
                                       ),
                                       bigTextWidget: BigTextWidget(
-                                        text: address.isEmpty ?
-                                        'Fill your address'
-                                        : address ,
+                                        text: address.isEmpty
+                                           ? 'Fill your address'
+                                            : address,
                                       ),
                                     ),
                                   ),
@@ -158,7 +164,7 @@ class AccountPage extends StatelessWidget {
                                         iconSize: Dimensions.height10 * 5 / 2,
                                         size: Dimensions.height10 * 5,
                                       ),
-                                      bigTextWidget: BigTextWidget(
+                                      bigTextWidget: const BigTextWidget(
                                         text: 'Log out',
                                       ),
                                     ),
@@ -187,14 +193,16 @@ class AccountPage extends StatelessWidget {
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.circular(Dimensions.radius20),
-                            image:const DecorationImage(
+                            image: const DecorationImage(
                                 fit: BoxFit.contain,
                                 image: AssetImage(
                                     'assets/images/signintocontinue.jpg'))),
                       ),
-                      SizedBox(height: Dimensions.height20,),
+                      SizedBox(
+                        height: Dimensions.height20,
+                      ),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Get.toNamed(RouteHelper.getSignInPage());
                         },
                         child: Container(
@@ -205,10 +213,15 @@ class AccountPage extends StatelessWidget {
                               right: Dimensions.width20),
                           decoration: BoxDecoration(
                             color: AppColors.mainColor,
-                              borderRadius:
-                              BorderRadius.circular(Dimensions.radius20),
-                              ),
-                          child: Center(child: BigTextWidget(text: 'Sign In',color: Colors.white,size: Dimensions.font26,)),
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius20),
+                          ),
+                          child: Center(
+                              child: BigTextWidget(
+                            text: 'Sign In',
+                            color: Colors.white,
+                            size: Dimensions.font26,
+                          )),
                         ),
                       )
                     ],

@@ -11,8 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../base/custom_loader.dart';
 import '../../controllers/auth_controller.dart';
+import 'pick_address_map.dart';
 
 class AddAddressPage extends StatefulWidget {
   const AddAddressPage({Key? key}) : super(key: key);
@@ -28,30 +28,71 @@ class _AddAddressPageState extends State<AddAddressPage> {
   late bool isLogged;
 
   CameraPosition _cameraPosition =
-      CameraPosition(target: LatLng(31.961275, 35.957942), zoom: 14);
-
+      CameraPosition(target: LatLng(31.961275, 35.957942), zoom: 17);
   LatLng _initialPosition = LatLng(31.961275, 35.957942);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    if (Get.find<LocationController>().pickPlaceMark.name != null) {
+      setState(() {
+        _initialPosition = LatLng(
+          Get.find<LocationController>().pickPosition.latitude,
+          Get.find<LocationController>().pickPosition.longitude,
+        );
+        _cameraPosition = CameraPosition(
+            target: LatLng(
+              Get.find<LocationController>().pickPosition.latitude,
+              Get.find<LocationController>().pickPosition.longitude,
+            ),
+            zoom: 17);
+      });
+    } else if (Get.find<LocationController>()
+        .getUserAddressFromLocalStorage()
+        .isNotEmpty) {
+      setState(() {
+        _cameraPosition = CameraPosition(
+            target: LatLng(
+                double.parse( Get.find<LocationController>().getAddress['latitude']),
+                    double.parse( Get.find<LocationController>().getAddress['longitude'])),
+            zoom: 17);
+        _initialPosition = LatLng(
+        double.parse(Get.find<LocationController>().getAddress['latitude']),
+        double.parse( Get.find<LocationController>().getAddress['longitude']));
+      });
+    } else {
+      Get.find<LocationController>().getGeoLocationPosition().then((value) {
+        setState(() {
+          _cameraPosition = CameraPosition(
+              target: LatLng(value.latitude, value.longitude), zoom: 17);
+          _initialPosition = LatLng(value.latitude, value.longitude);
+        });
+      });
+    }
     isLogged = Get.find<AuthController>().userLoggedIn();
     if (isLogged && Get.find<UserController>().userModel.id.isEmpty) {
       //Get.find<UserController>().getUserInfo();
       Get.find<UserController>().getUserInfoFromFirebase();
     }
     if (Get.find<LocationController>().addressList.isNotEmpty) {
+      if (Get.find<LocationController>().getUserAddressFromLocalStorage() ==
+          "") {
+        Get.find<LocationController>()
+            .saveUserAddress(Get.find<LocationController>().addressList.last);
+      }
       Get.find<LocationController>().getUserAddress();
-      _cameraPosition = CameraPosition(
-          target: LatLng(
-        double.parse(Get.find<LocationController>().getAddress['latitude']),
-        double.parse(Get.find<LocationController>().getAddress['longitude']),
-      ));
-      _initialPosition = LatLng(
-        double.parse(Get.find<LocationController>().getAddress['latitude']),
-        double.parse(Get.find<LocationController>().getAddress['longitude']),
-      );
+      setState(() {
+        _cameraPosition = CameraPosition(
+            target: LatLng(
+          double.parse(Get.find<LocationController>().getAddress['latitude']),
+          double.parse(Get.find<LocationController>().getAddress['longitude']),
+        ));
+        _initialPosition = LatLng(
+          double.parse(Get.find<LocationController>().getAddress['latitude']),
+          double.parse(Get.find<LocationController>().getAddress['longitude']),
+        );
+      });
     }
   }
 
@@ -80,7 +121,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
                   "${locationController.placeMark.locality ?? ''}"
                   "${locationController.placeMark.postalCode ?? ''}"
                   "${locationController.placeMark.country ?? ''}";
-              print('ADDRESS CONTROLLER ' + _addressController.text);
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
@@ -102,28 +142,48 @@ class _AddAddressPageState extends State<AddAddressPage> {
                           color: AppColors.mainColor,
                         ),
                       ),
-                      child: Stack(
-                        children: [
-                          GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                                target: _initialPosition, zoom: 14),
-                            zoomControlsEnabled: false,
-                            compassEnabled: false,
-                            indoorViewEnabled: true,
-                            mapToolbarEnabled: false,
-                            onCameraIdle: () {
-                              locationController.updatePosition(
-                                  _cameraPosition, true);
-                            },
-                            onCameraMove: ((position) =>
-                                _cameraPosition = position),
-                            onMapCreated: (GoogleMapController controller) {
-                              locationController.setMapController(controller);
-                            },
-                            myLocationEnabled: true,
-                          ),
-                        ],
-                      ),
+                      child: _initialPosition.latitude == 31.961275
+                          ? const Center(
+                              child: CircularProgressIndicator(
+                              color: AppColors.mainColor,
+                            ))
+                          : Stack(
+                              children: [
+                                GoogleMap(
+                                  initialCameraPosition: CameraPosition(
+                                      target: _initialPosition, zoom: 17),
+                                  zoomControlsEnabled: false,
+                                  compassEnabled: false,
+                                  indoorViewEnabled: true,
+                                  mapToolbarEnabled: false,
+                                  onTap: (LatLng) {
+                                    Get.toNamed(
+                                      RouteHelper.getPickMapAddressPage(),
+                                      arguments: PickAddressMap(
+                                        fromSignUp: false,
+                                        fromAddress: true,
+                                        canRoute: false,
+                                        route: "",
+                                        googleMapController:
+                                            locationController.mapController,
+                                      ),
+                                    );
+                                  },
+                                  onCameraIdle: () {
+                                    locationController.updatePosition(
+                                        _cameraPosition, true);
+                                  },
+                                  onCameraMove: ((position) =>
+                                      _cameraPosition = position),
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
+                                    locationController
+                                        .setMapController(controller);
+                                  },
+                                  myLocationEnabled: true,
+                                ),
+                              ],
+                            ),
                     ),
                     Padding(
                       padding: EdgeInsets.only(
@@ -147,15 +207,16 @@ class _AddAddressPageState extends State<AddAddressPage> {
                                   margin: EdgeInsets.only(
                                       right: Dimensions.width10),
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                          Dimensions.radius20 / 4),
-                                      color: Theme.of(context).cardColor,
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.grey[200]!,
-                                            spreadRadius: 1,
-                                            blurRadius: 5)
-                                      ]),
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radius20 / 4),
+                                    color: Theme.of(context).cardColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey[200]!,
+                                          spreadRadius: 1,
+                                          blurRadius: 5)
+                                    ],
+                                  ),
                                   child: Icon(
                                     index == 0
                                         ? Icons.home_filled
@@ -210,8 +271,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
           );
         },
       ),
-
-
       bottomNavigationBar: GetBuilder<LocationController>(
         builder: (locationController) {
           return Column(
@@ -238,22 +297,25 @@ class _AddAddressPageState extends State<AddAddressPage> {
                     GestureDetector(
                       onTap: () {
                         AddressModel _addressModel = AddressModel(
-                          addressType: locationController.addressTypeList[
-                              locationController.addressTypeIndex],
-                          contactPersonName: _contactPersonName.text,
-                          contactPersonNumber: _contactPersonNumber.text,
-                          address: _addressController.text,
-                          latitude: locationController.position.latitude.toString(),
-                          longitude: locationController.position.longitude.toString(),
-                          id: Get.find<UserController>().userModel.id
-                        );
+                            addressType: locationController.addressTypeList[
+                                locationController.addressTypeIndex],
+                            contactPersonName: _contactPersonName.text,
+                            contactPersonNumber: _contactPersonNumber.text,
+                            address: _addressController.text,
+                            latitude:
+                                locationController.position.latitude.toString(),
+                            longitude: locationController.position.longitude
+                                .toString(),
+                            id: Get.find<UserController>().userModel.id);
                         //locationController.addAddress
-                        locationController.addAddressOnFirebase(_addressModel).then((response){
-                          if(response.isSuccess){
+                        locationController
+                            .addAddressOnFirebase(_addressModel)
+                            .then((response) {
+                          if (response.isSuccess) {
                             Get.toNamed(RouteHelper.getInitial());
-                            Get.snackbar('Address','Added Successfully');
-                          }else{
-                            Get.snackbar("Address","Couldn't save address");
+                            Get.snackbar('Address', 'Added Successfully');
+                          } else {
+                            Get.snackbar("Address", "Couldn't save address");
                           }
                         });
                       },
@@ -268,7 +330,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
                             right: Dimensions.width10,
                             top: Dimensions.height20,
                             bottom: Dimensions.height20),
-                        child: BigTextWidget(
+                        child: const BigTextWidget(
                           text: 'Save Address',
                           color: Colors.white,
                         ),
