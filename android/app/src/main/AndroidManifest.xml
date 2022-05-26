@@ -6,7 +6,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
    <application
         android:label="food_delivery_app"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
+       tools:ignore="ExtraText"
+       tools:targetApi="m">
         <activity
             android:name=".MainActivity"
             android:exported="true"

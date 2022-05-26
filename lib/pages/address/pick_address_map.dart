@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/base/custom_button.dart';
 import 'package:food_delivery_app/controllers/location_controller.dart';
+import 'package:food_delivery_app/pages/address/widgets/search_location_dialogue_page.dart';
 import 'package:food_delivery_app/utils/colors.dart';
 import 'package:food_delivery_app/utils/dimensions.dart';
 import 'package:get/get.dart';
@@ -103,6 +104,9 @@ class _PickAddressMapState extends State<PickAddressMap> {
                               Get.find<LocationController>()
                                   .updatePosition(_cameraPosition, false);
                             },
+                            onMapCreated: (GoogleMapController mapController){
+                              _mapController = mapController;
+                            },
 
                           ),
                     Center(
@@ -114,14 +118,12 @@ class _PickAddressMapState extends State<PickAddressMap> {
                             )
                           : const CircularProgressIndicator(),
                     ),
-                    InkWell(
-                      onTap: (){
-
-                      },
-                      child: Positioned(
-                        top: Dimensions.height45,
-                        left: Dimensions.width20,
-                        right: Dimensions.width20,
+                    Positioned(
+                      top: Dimensions.height45,
+                      left: Dimensions.width20,
+                      right: Dimensions.width20,
+                      child:InkWell(
+                        onTap: ()=>Get.dialog(LocationDialogue(mapController: _mapController)),
                         child: Container(
                           height: Dimensions.height10 * 5,
                           padding: EdgeInsets.symmetric(
@@ -149,11 +151,11 @@ class _PickAddressMapState extends State<PickAddressMap> {
                                 ),
                               ),
                               SizedBox(width: Dimensions.width10),
-                              Icon(
-                                Icons.search,
-                                size: Dimensions.iconSize24,
-                                color: AppColors.yellowColor,
-                              ),
+                                Icon(
+                                  Icons.search,
+                                  size: Dimensions.iconSize24,
+                                  color: AppColors.yellowColor,
+                                ),
                             ],
                           ),
                         ),

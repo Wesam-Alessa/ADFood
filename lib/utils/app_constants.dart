@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 class AppConstants {
+  //mvs.bslmeiyu.com
   static const String APP_NAME = 'ADFood';
   static const int APP_VERSION = 1;
   static const String BASE_URL = 'http://mvs.bslmeiyu.com';
@@ -21,6 +22,13 @@ class AppConstants {
   static const String USER_ADDRESS = 'user_address';
   static const String ADD_USER_ADDRESS = 'add_user_address';
   static const String ADDRESS_LIST_URI = 'address_list_url';
+
+  // config
   static const String GEOCODE_URI = '/api/v1/config/geocode-api';
   static const String ZONE_URI = '/api/v1/config/get-zone-id';
+  static const String SEARCH_LOCATION_URI = '/api/v1/config/place-api-autocomplete';
+  static const String PLACE_DETAILS_URI = '/api/v1/config/place-api-details';
+
+  // order
+  static const String PLACE_ORDER_URI = '/api/v1/customer/order/place';
 }

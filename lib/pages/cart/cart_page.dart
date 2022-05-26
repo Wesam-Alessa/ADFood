@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/base/no_data_page.dart';
+import 'package:food_delivery_app/base/show_custom_snackbar.dart';
 import 'package:food_delivery_app/controllers/auth_controller.dart';
 import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
 import 'package:food_delivery_app/controllers/recommended_product_controller.dart';
+import 'package:food_delivery_app/controllers/user_controller.dart';
+import 'package:food_delivery_app/models/place_order_model.dart';
 import 'package:food_delivery_app/routes/route_helper.dart';
 import 'package:food_delivery_app/utils/app_constants.dart';
 import 'package:food_delivery_app/utils/colors.dart';
@@ -14,6 +17,7 @@ import 'package:food_delivery_app/widgets/small_text.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/location_controller.dart';
+import '../../controllers/order_controller.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({Key? key}) : super(key: key);
@@ -279,69 +283,101 @@ class CartPage extends StatelessWidget {
               ),
               color: AppColors.buttonBackgroundColor,
             ),
-            child:controller.getItems.isNotEmpty? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Dimensions.radius20),
-                    color: Colors.white,
-                  ),
-                  padding: EdgeInsets.only(
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                      top: Dimensions.height20,
-                      bottom: Dimensions.height20),
-                  child: Row(
+            child: controller.getItems.isNotEmpty
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      SizedBox(
-                        width: Dimensions.width10 / 2,
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.only(
+                            left: Dimensions.width10,
+                            right: Dimensions.width10,
+                            top: Dimensions.height20,
+                            bottom: Dimensions.height20),
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: Dimensions.width10 / 2,
+                            ),
+                            BigTextWidget(
+                              text: "\$ ${controller.totalAmount.toString()}",
+                            ),
+                            SizedBox(
+                              width: Dimensions.width10 / 2,
+                            ),
+                          ],
+                        ),
                       ),
-                      BigTextWidget(
-                        text: "\$ ${controller.totalAmount.toString()}",
-                      ),
-                      SizedBox(
-                        width: Dimensions.width10 / 2,
+                      GestureDetector(
+                        onTap: () {
+                          if (Get.find<AuthController>().userLoggedIn()) {
+                            if (Get.find<LocationController>()
+                                .getUserAddressFromLocalStorage()
+                                .isEmpty) {
+                              Get.toNamed(RouteHelper.getAddressPage());
+                            } else {
+                              var location = Get.find<LocationController>()
+                                  .getUserAddress();
+                              var cart = Get.find<CartController>().getItems;
+                              var user = Get.find<UserController>().userModel;
+                              PlaceOrderBody placeOrder = PlaceOrderBody(
+                                cart: cart,
+                                orderAmount: 100.0,
+                                distance: 10.0,
+                                scheduleAt: '',
+                                orderNote: "Not about the food",
+                                address: location.address,
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                                contactPersonName: user.name,
+                                contactPersonNumber: user.phone,
+                              );
+                              Get.find<OrderController>().placeOrder(
+                                _callback,
+                                placeOrder
+                              );
+                            }
+                            controller.addToHistory();
+                          } else {
+                            Get.toNamed(RouteHelper.getSignInPage());
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(Dimensions.radius20),
+                            color: AppColors.mainColor,
+                          ),
+                          padding: EdgeInsets.only(
+                            left: Dimensions.width10,
+                            right: Dimensions.width10,
+                            top: Dimensions.height20,
+                            bottom: Dimensions.height20,
+                          ),
+                          child: BigTextWidget(
+                            text: 'Check out',
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if(Get.find<AuthController>().userLoggedIn()){
-                      if(Get.find<LocationController>().addressList.isEmpty){
-                        Get.toNamed(RouteHelper.getAddressPage());
-                      }
-                      else{
-                        Get.offNamed(RouteHelper.getInitial());
-                      }
-                      controller.addToHistory();
-                    }else{
-                      Get.toNamed(RouteHelper.getSignInPage());
-                    }
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Dimensions.radius20),
-                      color: AppColors.mainColor,
-                    ),
-                    padding: EdgeInsets.only(
-                      left: Dimensions.width10,
-                      right: Dimensions.width10,
-                      top: Dimensions.height20,
-                      bottom: Dimensions.height20,
-                    ),
-                    child: BigTextWidget(
-                      text: 'Check out',
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
-            ) : Container(),
+                  )
+                : Container(),
           );
         },
       ),
     );
+  }
+
+  void _callback(bool isSuccess, String message, String orderID) {
+    if (isSuccess) {
+      Get.offNamed(RouteHelper.getPaymentPage('100010', '27'));
+    } else {
+      showCustomSnackBar(message);
+    }
   }
 }

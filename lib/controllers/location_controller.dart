@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:food_delivery_app/data/api/api_checker.dart';
 import 'package:food_delivery_app/data/repository/location_repo.dart';
 import 'package:food_delivery_app/models/address_model.dart';
 import 'package:food_delivery_app/models/response_model.dart';
@@ -7,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:google_maps_webservice/src/places.dart';
 import '../base/show_custom_snackbar.dart';
 
 class LocationController extends GetxController implements GetxService {
@@ -117,7 +119,7 @@ class LocationController extends GetxController implements GetxService {
             position.target.longitude.toString(),
             false);
 
-            _buttonDisabled = !_responseModel.isSuccess;
+        _buttonDisabled = !_responseModel.isSuccess;
 
         if (_changeAddress) {
           String _address = await getAddressFromGeocode(
@@ -128,6 +130,8 @@ class LocationController extends GetxController implements GetxService {
           } else {
             _pickPlacamark = Placemark(name: _address);
           }
+        }else {
+          _changeAddress = true;
         }
       } catch (e) {
         showCustomSnackBar(e.toString());
@@ -298,30 +302,84 @@ class LocationController extends GetxController implements GetxService {
     }
     update();
     Response response = await locationRepo.getZone(lat, lng);
-    if(response.statusCode == 200){
-
+    if (response.statusCode == 200) {
       //if(response.body["zone_id"] != 2){
-       // _responseModel = ResponseModel(false, response.body['zone_id'].toString());
-       // _inZone = false;
+      // _responseModel = ResponseModel(false, response.body['zone_id'].toString());
+      // _inZone = false;
       //}else{
-        _responseModel = ResponseModel(true, response.body['zone_id'].toString());
-        _inZone = true;
+      _responseModel = ResponseModel(true, response.body['zone_id'].toString());
+      _inZone = true;
       //}
-     }else{
+    } else {
       _inZone = false;
       _responseModel = ResponseModel(true, response.statusText!);
     }
-    print("///////////////////////////////////////////////////////////ZOE RESPONSE CODE IS "+response.statusCode.toString());// 200  //404  //500  //403
+    // print(
+    //     "///////////////////////////////////////////////////////////ZOE RESPONSE CODE IS " +
+    //         response.statusCode.toString()); // 200  //404  //500  //403
     // await Future.delayed(const Duration(seconds: 2), () {
     //   _responseModel = ResponseModel(true, "success");
-      if (markerLoad) {
-        _loading = false;
-      } else {
-        _isLoading = false;
-      }
+    if (markerLoad) {
+      _loading = false;
+    } else {
+      _isLoading = false;
+    }
     //   _inZone = true;
     // });
     update();
     return _responseModel;
+  }
+
+  /*
+   save the google map suggestions for address
+  */
+  List<Prediction> _predictionList = [];
+
+  List<Prediction> get predictionList => _predictionList;
+
+  Future<List<Prediction>> searchLocation(
+      BuildContext context, String text) async {
+    if (text.isNotEmpty) {
+      Response response = await locationRepo.searchLocation(text);
+      if (response.statusCode == 200 && response.body['status'] == "OK") {
+        _predictionList = [];
+        response.body['predictions'].forEach((prediction) =>
+            _predictionList.add(Prediction.fromJson(prediction)));
+      } else {
+        ApiChecker.checkApi(response);
+      }
+    }
+    return _predictionList;
+  }
+
+  setLocation(
+      String placeID, String address, GoogleMapController mapController) async {
+    _loading = true;
+    update();
+    PlacesDetailsResponse detail;
+    Response response = await locationRepo.setLocation(placeID);
+    detail = PlacesDetailsResponse.fromJson(response.body);
+    _pickPosition = Position(
+      longitude: detail.result.geometry!.location.lat,
+      latitude: detail.result.geometry!.location.lng,
+      timestamp: DateTime.now(),
+      accuracy: 1,
+      altitude: 1,
+      heading: 1,
+      speed: 1,
+      speedAccuracy: 1,
+    );
+    _pickPlacamark = Placemark(name: address);
+    _changeAddress = false;
+    if (!mapController.isNull) {
+      mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(
+            detail.result.geometry!.location.lat,
+            detail.result.geometry!.location.lng,
+          ),
+          zoom: 17)));
+    }
+    _loading = false;
+    update();
   }
 }
