@@ -1,16 +1,12 @@
-# food_delivery_app
+A new Flutter project for food_delivery_app .
 
-A new Flutter project.
+Contents :
+1. complex Ul screens.
+2. Animated PageView.
+3. Api Client, Repository and Controllers.
+4. Build models, classes, working with JSON, Map and List for Google Map and User Model.
+5. Responsive lay out.
+6. Pick user location based on user tap.
+7. Keep tracking of user orders.
+8. Paypal payment set up .
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
