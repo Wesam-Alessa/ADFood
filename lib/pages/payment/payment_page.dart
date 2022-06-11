@@ -31,8 +31,8 @@ class _PaymentScreenState extends State<PaymentPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-    selectedUrl = '${AppConstants.BASE_URL}/payment-mobile?customer_id=${widget.orderModel.userId}&order_id=${widget.orderModel.id}';
-    //selectedUrl = 'http://mvs.bslmeiyu.com/payment-mobile?customer_id=27&order_id=100010';
+    //selectedUrl = '${AppConstants.BASE_URL}/payment-mobile?customer_id=${widget.orderModel.userId}&order_id=${widget.orderModel.id}';
+    selectedUrl = 'http://mvs.bslmeiyu.com/payment-mobile?customer_id=27&order_id=100014';
   }
 
   @override

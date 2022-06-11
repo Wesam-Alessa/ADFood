@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/pages/account/account_page.dart';
 import 'package:food_delivery_app/pages/auth/sign_up_page.dart';
 import 'package:food_delivery_app/pages/cart/cart_history.dart';
+import 'package:food_delivery_app/pages/order/order_page.dart';
 import 'package:food_delivery_app/utils/colors.dart';
 import 'package:get/get.dart';
  import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildScreens() {
     return const[
        MainFoodPage(),
-       SignUpPage(),
+       OrderPage(),
        CartHistory(),
        AccountPage(),
     ];
