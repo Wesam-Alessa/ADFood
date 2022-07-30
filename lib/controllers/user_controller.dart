@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:food_delivery_app/data/repository/user_repo.dart';
 import 'package:food_delivery_app/models/response_model.dart';
 import 'package:food_delivery_app/models/user_model.dart';

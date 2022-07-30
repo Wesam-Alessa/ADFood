@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_const_constructors, avoid_types_as_parameter_names, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/base/custom_app_bar.dart';
 import 'package:food_delivery_app/controllers/location_controller.dart';
 import 'package:food_delivery_app/controllers/user_controller.dart';
 import 'package:food_delivery_app/models/address_model.dart';
@@ -7,7 +10,6 @@ import 'package:food_delivery_app/utils/colors.dart';
 import 'package:food_delivery_app/utils/dimensions.dart';
 import 'package:food_delivery_app/widgets/app_text_field_widget.dart';
 import 'package:food_delivery_app/widgets/big_text.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -22,7 +24,7 @@ class AddAddressPage extends StatefulWidget {
 }
 
 class _AddAddressPageState extends State<AddAddressPage> {
-  TextEditingController _addressController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
   final TextEditingController _contactPersonName = TextEditingController();
   final TextEditingController _contactPersonNumber = TextEditingController();
   late bool isLogged;
@@ -33,7 +35,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (Get.find<LocationController>().pickPlaceMark.name != null) {
       setState(() {
@@ -99,10 +100,13 @@ class _AddAddressPageState extends State<AddAddressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Address Page'),
-        backgroundColor: AppColors.mainColor,
+      appBar: CustomAppBar(
+        title: 'Address',
       ),
+      // AppBar(
+      //   title: const Text(),
+      //   backgroundColor: AppColors.mainColor,
+      // ),
       body: GetBuilder<UserController>(
         builder: (userController) {
           if (userController.userModel.id.isNotEmpty &&

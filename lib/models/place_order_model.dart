@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:food_delivery_app/models/cart_model.dart';
 
 class PlaceOrderBody {
@@ -10,6 +12,8 @@ class PlaceOrderBody {
   late String _longitude;
   late  String _contactPersonName;
   late String _contactPersonNumber;
+  late String _orderType;
+  late String _paymentMethod;
 
   PlaceOrderBody(
       {required List<CartModel> cart,
@@ -22,6 +26,8 @@ class PlaceOrderBody {
         required String longitude,
         required String contactPersonName,
         required String contactPersonNumber,
+        required String orderType,
+        required String paymentMethod
       }){
     this._cart = cart;
     this._orderAmount = orderAmount;
@@ -32,6 +38,8 @@ class PlaceOrderBody {
     this._longitude = longitude;
     this._contactPersonName = contactPersonName;
     this._contactPersonNumber = contactPersonNumber;
+    this._orderType = orderType;
+    this._paymentMethod = paymentMethod;
   }
 
   List<CartModel> get cart => _cart!;
@@ -70,7 +78,7 @@ class PlaceOrderBody {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
 
     if (this._cart != null) {
       data['cart'] = this._cart!.map((v) => v.toJson()).toList();
@@ -83,6 +91,8 @@ class PlaceOrderBody {
     data['longitude'] = this._longitude;
     data['contact_person_name'] = this._contactPersonName;
     data['contact_person_number'] = this._contactPersonNumber;
+    data['order_type'] = this._orderType;
+    data['payment_method'] = this._paymentMethod;
     return data;
   }
 

@@ -26,7 +26,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _loadResources();
     controller = AnimationController(
@@ -42,7 +41,6 @@ class _SplashScreenState extends State<SplashScreen>
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     controller.dispose();
   }

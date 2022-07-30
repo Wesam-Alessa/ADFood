@@ -1,12 +1,13 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/pages/account/account_page.dart';
-import 'package:food_delivery_app/pages/auth/sign_up_page.dart';
 import 'package:food_delivery_app/pages/cart/cart_history.dart';
 import 'package:food_delivery_app/pages/order/order_page.dart';
 import 'package:food_delivery_app/utils/colors.dart';
 import 'package:get/get.dart';
- import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import '../../controllers/auth_controller.dart';
 import '../../controllers/user_controller.dart';
@@ -30,6 +31,7 @@ class _HomePageState extends State<HomePage> {
        AccountPage(),
     ];
   }
+
   List<PersistentBottomNavBarItem> _navBarsItems() {
     return [
       PersistentBottomNavBarItem(
@@ -61,7 +63,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _controller = PersistentTabController(initialIndex: 0);
     var _userLoggedIn = Get.find<AuthController>().userLoggedIn();

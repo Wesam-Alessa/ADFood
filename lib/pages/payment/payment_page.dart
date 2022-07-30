@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 import 'dart:io';
 
@@ -45,13 +47,13 @@ class _PaymentScreenState extends State<PaymentPage> {
           centerTitle: true,
           title: const Text("Payment"),
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: const Icon(Icons.arrow_back_ios),
             onPressed:()=> _exitApp(context),
           ),
           backgroundColor: AppColors.mainColor,
         ),
         body: Center(
-          child: Container(
+          child: SizedBox(
             width: Dimensions.screenWidth,
             child: Stack(
               children: [
@@ -89,7 +91,7 @@ class _PaymentScreenState extends State<PaymentPage> {
                 ),
                 _isLoading ? Center(
                   child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
-                ) : SizedBox.shrink(),
+                ) : const SizedBox.shrink(),
               ],
             ),
           ),

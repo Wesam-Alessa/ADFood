@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, deprecated_member_use
+
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -9,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+// ignore: implementation_imports
 import 'package:google_maps_webservice/src/places.dart';
 import '../base/show_custom_snackbar.dart';
 
@@ -43,7 +46,7 @@ class LocationController extends GetxController implements GetxService {
 
   List<AddressModel> get allAddressList => _allAddressList;
 
-  List<String> _addressTypeList = ['home', 'office', 'other'];
+  final List<String> _addressTypeList = ['home', 'office', 'other'];
 
   List<String> get addressTypeList => _addressTypeList;
 

@@ -1,3 +1,4 @@
+
 import 'package:food_delivery_app/data/repository/order_repo.dart';
 import 'package:food_delivery_app/models/place_order_model.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,13 @@ class OrderController extends GetxController implements GetxService {
   List<OrderModel> get currentOrderList => _currentOrderList;
 
   List<OrderModel> get historyOrderList => _historyOrderList;
+
+  int _paymentIndex = 0;
+  int get paymentIndex => _paymentIndex;
+  String _orderType = "delivery";
+  String get orderType => _orderType;
+  String _note = " ";
+  String get note => _note;
 
   Future<void> placeOrder(Function callback, PlaceOrderBody placeOrder) async {
     _isLoading = true;
@@ -62,6 +70,21 @@ class OrderController extends GetxController implements GetxService {
     print("_current Order List "+_currentOrderList.length.toString());
 
     _isLoading = false;
+    update();
+  }
+
+  void setPaymentIndex(int index){
+    _paymentIndex = index;
+    update();
+  }
+
+  void setDeliveryType(String type){
+    _orderType = type;
+    update();
+  }
+
+  void setFoodNote(String note){
+    _note = note;
     update();
   }
 }

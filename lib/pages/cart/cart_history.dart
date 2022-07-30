@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/base/no_data_page.dart';
 import 'package:food_delivery_app/controllers/cart_controller.dart';
@@ -43,7 +42,7 @@ class CartHistory extends StatelessWidget {
 
     Widget timeWidget(int index) {
       var outputDate = DateTime.now().toString();
-      if(index<getCartHistoryList.length){
+      if (index < getCartHistoryList.length) {
         DateTime parseDate = DateFormat('yyyy-MM-dd HH:mm:ss')
             .parse(getCartHistoryList[listCounter].time!);
         var inputDate = DateTime.parse(parseDate.toString());
@@ -66,7 +65,7 @@ class CartHistory extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                BigTextWidget(
+                const BigTextWidget(
                   text: 'Cart History',
                   color: Colors.white,
                 ),

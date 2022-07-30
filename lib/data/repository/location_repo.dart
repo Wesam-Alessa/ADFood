@@ -1,4 +1,4 @@
-import 'dart:io';
+// ignore_for_file: avoid_print, avoid_function_literals_in_foreach_calls
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:food_delivery_app/data/api/api_client.dart';

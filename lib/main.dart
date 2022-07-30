@@ -1,4 +1,4 @@
- import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/controllers/cart_controller.dart';
 import 'package:food_delivery_app/controllers/popular_product_controller.dart';
@@ -23,10 +23,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // FirebaseAuth.instance
     //     .authStateChanges()
@@ -49,11 +47,9 @@ class _MyAppState extends State<MyApp> {
             return GetMaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Food App',
-               theme: ThemeData(
-                 primaryColor: AppColors.mainColor,
-                 fontFamily: "Roboto"
-               ),
-               // home: SignInPage(),
+              theme: ThemeData(
+                  primaryColor: AppColors.mainColor, fontFamily: "Roboto"),
+              // home: SignInPage(),
               initialRoute: RouteHelper.getSplashPage(),
               getPages: RouteHelper.routes,
             );
@@ -63,7 +59,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-
-
-

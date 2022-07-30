@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/base/custom_app_bar.dart';
 import 'package:food_delivery_app/base/custom_loader.dart';
 import 'package:food_delivery_app/base/show_custom_snackbar.dart';
 import 'package:food_delivery_app/controllers/auth_controller.dart';
@@ -30,14 +31,8 @@ class AccountPage extends StatelessWidget {
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.mainColor,
-        title: BigTextWidget(
-          text: 'Profile',
-          color: Colors.white,
-          size: Dimensions.font26,
-        ),
+      appBar:const CustomAppBar(
+        title: 'Profile',
       ),
       body: GetBuilder<UserController>(
         builder: (userController) {

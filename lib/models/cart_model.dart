@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_this
+
 import 'package:food_delivery_app/models/products_model.dart';
 
 class CartModel {

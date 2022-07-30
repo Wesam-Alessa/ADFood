@@ -28,7 +28,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     pageController.addListener(() {
       setState(() {
@@ -39,7 +38,6 @@ class _FoodPageBodyState extends State<FoodPageBody> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     pageController.dispose();
     super.dispose();
   }
@@ -89,13 +87,13 @@ class _FoodPageBodyState extends State<FoodPageBody> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              BigTextWidget(text: 'Recommended'),
+              const BigTextWidget(text: 'Recommended'),
               SizedBox(
                 width: Dimensions.width10,
               ),
               Container(
                 margin: const EdgeInsets.only(bottom: 3),
-                child: BigTextWidget(text: '.', color: Colors.black26),
+                child: const BigTextWidget(text: '.', color: Colors.black26),
               ),
               SizedBox(
                 width: Dimensions.width10,

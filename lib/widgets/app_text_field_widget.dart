@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/utils/colors.dart';
 import 'package:food_delivery_app/utils/dimensions.dart';
@@ -6,17 +8,20 @@ class AppTextFieldWidget extends StatefulWidget {
   final TextEditingController controller;
   final IconData iconData;
   final String hintText;
-  //final Color color;
+  final Color iconColor;
   TextInputType textInputType;
   bool isObscure;
+  bool maxLines;
+
   AppTextFieldWidget({
     Key? key,
     required this.controller,
     required this.iconData,
     required this.hintText,
-    //required this.color,
+    this.iconColor = AppColors.yellowColor,
     this.textInputType = TextInputType.text,
     this.isObscure = false,
+    this.maxLines=false
   }) : super(key: key);
 
   @override
@@ -49,11 +54,12 @@ class _AppTextFieldWidgetState extends State<AppTextFieldWidget> {
         controller: widget.controller,
         obscureText: visible ? !widget.isObscure : widget.isObscure,
         keyboardType: widget.textInputType,
+        maxLines:widget.maxLines?3:1 ,
         decoration: InputDecoration(
           hintText: widget.hintText,
           prefixIcon: Icon(
             widget.iconData,
-            color: AppColors.yellowColor,
+            color: widget.iconColor,
           ),
           suffixIcon:widget.isObscure? GestureDetector(
             onTap: (){

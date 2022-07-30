@@ -1,5 +1,6 @@
+// ignore_for_file: implementation_imports, 
+
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:food_delivery_app/controllers/location_controller.dart';
 import 'package:get/get.dart';
@@ -53,7 +54,7 @@ class LocationDialogue extends StatelessWidget {
                   padding: EdgeInsets.all(Dimensions.width10),
                   child: Row(
                     children: [
-                      Icon(Icons.location_on),
+                      const Icon(Icons.location_on),
                       Expanded(
                           child: Text(
                         suggestion.description!,

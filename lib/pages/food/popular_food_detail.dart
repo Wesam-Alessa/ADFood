@@ -130,7 +130,7 @@ class PopularFoodDetail extends StatelessWidget {
                   SizedBox(
                     height: Dimensions.height20,
                   ),
-                  BigTextWidget(text: 'Introduce'),
+                  const BigTextWidget(text: 'Introduce'),
                   SizedBox(
                     height: Dimensions.height20,
                   ),

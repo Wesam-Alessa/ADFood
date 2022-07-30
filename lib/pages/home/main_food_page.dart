@@ -45,7 +45,7 @@ class _MainFoodPageState extends State<MainFoodPage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      BigTextWidget(
+                      const BigTextWidget(
                         text: 'Jordan',
                         color: AppColors.mainColor,
                       ),

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/base/custom_button.dart';
 import 'package:food_delivery_app/controllers/location_controller.dart';
@@ -36,7 +38,6 @@ class _PickAddressMapState extends State<PickAddressMap> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     // if (Get.find<LocationController>().addressList.isEmpty) {
