@@ -12,7 +12,8 @@ Contents :
 7. Keep tracking of user orders.
 8. Paypal payment set up .
 
-(( under development ))
+
+![Click to Eat](https://user-images.githubusercontent.com/85794958/205644722-95fa33d7-5aec-4b58-a51a-1ea281f15dfa.gif)
 
 
 ![1](https://user-images.githubusercontent.com/85794958/172360723-bf0bcffc-408b-4877-a2bb-20c61503e592.png)
