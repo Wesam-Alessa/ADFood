@@ -1,8 +1,9 @@
 
 
-A new Flutter project for food_delivery_app .
+Food Delivery App .
 
 Contents :
+
 1. complex Ul screens.
 2. Animated PageView.
 3. Api Client, Repository and Controllers.
